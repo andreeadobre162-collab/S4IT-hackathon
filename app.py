@@ -86,7 +86,16 @@ except (KeyError, FileNotFoundError):
 # See slide for the exact code.
 def get_air_quality_category(pm25: float) -> dict:
     # === TODO 3 — YOUR CODE HERE ===
-    return {"label": "Unknown", "color": "#888888", "advice": "Category not implemented yet."}
+    if pm25 < 12:
+        return {"label": "Good", "color": "#22C55E", "advice": "Air quality is satisfactory."}
+    elif pm25 < 35:
+        return {"label": "Moderate", "color": "#FFCC4E", "advice": "Air quality is acceptable."}
+    elif pm25 < 55:
+        return {"label": "Unhealthy for Sensitive Groups", "color": "#FF9800", "advice": "Sensitive groups should consider limiting outdoor exertion."}
+    elif pm25 < 150:
+        return {"label": "Unhealthy", "color": "#E53935", "advice": "Everyone should limit outdoor exertion."}
+    else:
+        return {"label": "Hazardous", "color": "#7e22ce", "advice": "Everyone should avoid all outdoor exertion."}
 
 
 
