@@ -57,12 +57,7 @@ st.set_page_config(
 #     and calls st.warning("⚠️ OpenAQ API key not configured. Using sample data only.")
 # See slide for the exact code.
 
-try:
-    OPENAQ_API_KEY = st.secrets["OPENAQ_API_KEY"]
-except (KeyError, FileNotFoundError):
-    OPENAQ_API_KEY = ""
-    st.warning("⚠️ OpenAQ API key not configured. Using sample data only.")
-
+OPENAQ_API_KEY = ""  # ← DELETE this line and write the try/except instead
 
 
 # ------------------------------------------------------------------------------
@@ -86,16 +81,7 @@ except (KeyError, FileNotFoundError):
 # See slide for the exact code.
 def get_air_quality_category(pm25: float) -> dict:
     # === TODO 3 — YOUR CODE HERE ===
-    if pm25 < 12:
-        return {"label": "Good", "color": "#22C55E", "advice": "Air quality is satisfactory."}
-    elif pm25 < 35:
-        return {"label": "Moderate", "color": "#FFCC4E", "advice": "Air quality is acceptable."}
-    elif pm25 < 55:
-        return {"label": "Unhealthy for Sensitive Groups", "color": "#FF9800", "advice": "Sensitive groups should consider limiting outdoor exertion."}
-    elif pm25 < 150:
-        return {"label": "Unhealthy", "color": "#E53935", "advice": "Everyone should limit outdoor exertion."}
-    else:
-        return {"label": "Hazardous", "color": "#7e22ce", "advice": "Everyone should avoid all outdoor exertion."}
+    return {"label": "Unknown", "color": "#888888", "advice": "Category not implemented yet."}
 
 
 
@@ -168,14 +154,13 @@ if df.empty:
 
 # === TODO 2 — YOUR CODE HERE ===
 # (delete these placeholders and write the real lines)
-avg_pm25 = round(df["pm25"].mean(), 1)
-sensor_count = len(df)
-worst_pm25 = df["pm25"].max()
-worst_station = df.loc[df["pm25"].idxmax(), "station"]
-best_pm25 = df["pm25"].min()
-best_station = df.loc[df["pm25"].idxmin(), "station"]
+avg_pm25 = 0
+sensor_count = 0
+worst_pm25 = 0
+worst_station = "TODO"
+best_pm25 = 0
+best_station = "TODO"
 
-st.error(f"DEBUG: type(df)={type(df).__name__}, len(df)={len(df)}, avg={avg_pm25}, worst={worst_station}")
 
 # ------------------------------------------------------------------------------
 # METRIC CARDS — display the 4 numbers as Streamlit metric widgets
@@ -282,10 +267,7 @@ m = folium.Map(
 #   [row["lat"], row["lon"], row["pm25"]] for each row in df
 
 # === TODO 4 — YOUR CODE HERE ===
-heat_data = [
-    [row["lat"], row["lon"], row["pm25"]]
-    for _, row in df.iterrows()
-]
+heat_data = []  # ← replace with the list comprehension
 
 
 # Color gradient for the heatmap (already done for you)
@@ -331,22 +313,6 @@ HeatMap(
 
 # === TODO 5 — YOUR CODE HERE ===
 # (a for loop over df.iterrows() goes here — see slide)
-for _, row in df.iterrows():
-    sensor_category = get_air_quality_category(row["pm25"])
-    popup_html = (
-        f"<b>{row['station']}</b><br>"
-        f"PM2.5: {row['pm25']} μg/m³<br>"
-        f"{sensor_category['label']}"
-    )
-    folium.CircleMarker(
-        location=[row["lat"], row["lon"]],
-        radius=8,
-        popup=folium.Popup(popup_html, max_width=250),
-        tooltip=f"{row['station']}: {row['pm25']} μg/m³",
-        color="white", weight=2, fill=True,
-        fill_color=sensor_category["color"],
-        fill_opacity=0.9,
-    ).add_to(m)
 
 
 # ------------------------------------------------------------------------------
@@ -386,26 +352,10 @@ st.caption("Based on the current city-average PM2.5 levels.")
 #   else            → 🟣 "STAY INDOORS"          color #7e22ce
 
 # === TODO 6 — YOUR CODE HERE ===
-if avg_pm25 < 12:
-    verdict_emoji = "🟢"; verdict_text = "YES — GO ENJOY IT"
-    verdict_color = "#22C55E"
-    detailed_message = "Air quality is excellent. Perfect for outdoor activity."
-elif avg_pm25 < 35:
-    verdict_emoji = "🟡"; verdict_text = "MOSTLY OK"
-    verdict_color = "#FFCC4E"
-    detailed_message = "Fine for most. If you have asthma, shorten your session."
-elif avg_pm25 < 55:
-    verdict_emoji = "🟠"; verdict_text = "BE CAREFUL"
-    verdict_color = "#FF9800"
-    detailed_message = "Sensitive groups: avoid prolonged outdoor activity."
-elif avg_pm25 < 150:
-    verdict_emoji = "🔴"; verdict_text = "NOT TODAY"
-    verdict_color = "#E53935"
-    detailed_message = "Unhealthy. Postpone exercise. Wear an N95."
-else:
-    verdict_emoji = "🟣"; verdict_text = "STAY INDOORS"
-    verdict_color = "#7e22ce"
-    detailed_message = "Hazardous. Stay inside, close windows."
+verdict_emoji = "❓"
+verdict_text = "TODO"
+verdict_color = "#888888"
+detailed_message = "Fill in TODO 6 to see the verdict."
 
 
 # ------------------------------------------------------------------------------
